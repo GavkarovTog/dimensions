@@ -1,5 +1,3 @@
-import 'dart:ui';
-
 import 'package:flutter/material.dart';
 import 'package:dimensions/utils.dart';
 
@@ -52,8 +50,39 @@ class FigurePainter extends CustomPainter {
     List<Vertex4> vertices = resultingFigure.getVertices();
     List<List<int>> facing = resultingFigure.getEdges();
 
+    Vertex4? maxVertex;
+    for (Vertex4 vertex in vertices) {
+      if (maxVertex == null) {
+        maxVertex = vertex;
+        continue;
+      }
+
+      if (maxVertex.diff(camera.position).length < vertex.diff(camera.position).length) {
+        maxVertex = vertex;
+      }
+    }
+
+    List<Vertex4> minVertices = [];
+    for (Vertex4 vertex in vertices) {
+      if (vertex.diff(camera.position).length == maxVertex!.diff(camera.position).length) {
+        minVertices.add(vertex);
+      }
+    }
+
     for (List<int> edges in facing) {
       int previous = -1;
+
+      bool isHidden = false;
+      for (int edgeIndex in edges) {
+        if (minVertices.contains(vertices[edgeIndex - 1])) {
+          isHidden = true;
+          break;
+        }
+      }
+
+      if (isHidden) {
+        continue;
+      }
 
       for (int edgeIndex in edges) {
         if (previous == -1) {

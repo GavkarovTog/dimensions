@@ -235,9 +235,17 @@ class Vertex4 {
     return _w;
   }
 
+  double get length {
+    return sqrt(x * x + y * y + z * z + w * w);
+  }
+
   @override
   String toString() {
     return "Vertex4($x, $y, $z, $w)";
+  }
+
+  Vertex4 diff(Vertex4 vertex) {
+    return Vertex4(x - vertex.x, y - vertex.y, z - vertex.z, w - vertex.w);
   }
 
   Vertex4 multiply(Matrix4 matrix) {
@@ -353,8 +361,11 @@ class Figure3D implements Figure {
         }
       }
 
+      print(facingValues);
       figure._edges.add(facingValues);
     }
+
+    print("edges: ${figure._edges}");
 
     return figure;
   }
